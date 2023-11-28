@@ -2,9 +2,14 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour, IPoolable, IDestructible
 {
-    [SerializeField] float bulletSpeed = 10.0f;
-    [SerializeField] float lifeTime = 5.0f;
+    public float bulletSpeed = 10.0f;
+    [SerializeField] float lifeTime = 1.0f;
+    //bad idea, this should be on debris cause the value might depend on what debris it is not on what bullet it is?
+    [SerializeField] int scoreInt = 1;
     private Rigidbody2D rb;
+    private bool hasCollided = false;
+
+
 
     private void Awake()
     {
@@ -13,6 +18,8 @@ public class BulletController : MonoBehaviour, IPoolable, IDestructible
 
     public void Activate(Vector3 position, Quaternion rotation)
     {
+        hasCollided = false;
+
         transform.position = position;
         transform.rotation = rotation;
         gameObject.SetActive(true);
@@ -28,22 +35,30 @@ public class BulletController : MonoBehaviour, IPoolable, IDestructible
     {
         gameObject.SetActive(false);
         CancelInvoke();
-        rb.velocity = Vector2.zero; 
+        rb.velocity = Vector2.zero;
+        ObjectPoolManager.Instance.ReturnBullet(this);
+
     }
 
     public void DestroyObject()
     {
         Deactivate(); 
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Debris"))
+        if (!hasCollided && collision.gameObject.CompareTag("Debris"))
         {
-            DestroyObject();
+            //Debug.Log("collsion with debris");
+            hasCollided = true;
 
-            // health diminish instead? read gdd first
+            DestroyObject();
+           // health diminish instead? read gdd first
             Destroy(collision.gameObject);
+
+            ScoreManager.Instance.IncrementScore(scoreInt);
+
         }
     }
 

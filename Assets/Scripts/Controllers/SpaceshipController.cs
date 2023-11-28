@@ -52,7 +52,7 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
 
     public void DestroyObject()
     {
-        // Animation, reset level, reset score?
+        // Animation, reset level, reset score? Trigger and event? 
         gameObject.SetActive(false);
     }
 
@@ -61,10 +61,12 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
         if (collision.gameObject.CompareTag("Debris"))
         {
             DestroyObject();
-            Debug.Log("Destroyed.");
+            //Debug.Log("Destroyed.");
+            GameStateManager.Instance.TriggerGameOver();
+
         }
 
-        // retrieve the IViagra component from the gameObject of the collision
+        // retrieve the IViagra component from the gameObject of the collision, bad it might be, think what better then GetComponent?
         IViagra powerUp = collision.gameObject.GetComponent<IViagra>();
         if (powerUp != null)
         {

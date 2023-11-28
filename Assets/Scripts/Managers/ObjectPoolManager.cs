@@ -37,13 +37,16 @@ public class ObjectPoolManager : MonoBehaviour
             // optionally create a new bullet if the pool is empty?
             GameObject obj = Instantiate(bulletPrefab);
             return obj.GetComponent<IPoolable>();
+            //Debug.Log("new one , pool empty");
         }
     }
 
     public void ReturnBullet(IPoolable bullet)
     {
-        bullet.Deactivate();
+       // bullet.Deactivate();
         bulletPool.Enqueue(bullet);
+       // Debug.Log("return to pool");
+
     }
 
     //outside of ObjectPoolManager?
