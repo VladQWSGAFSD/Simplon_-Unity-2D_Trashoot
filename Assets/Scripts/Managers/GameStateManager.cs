@@ -26,8 +26,7 @@ public class GameStateManager : MonoBehaviour
     {
         SceneTransitionManager.Instance.FadeToBlack(() =>
         {
-            
-            Time.timeScale = 0; // Pause the game
+            Time.timeScale = 0; // Pause the game?
             UIManager.Instance.ShowGameOverScreen(ScoreManager.Instance.score);
         });
     }

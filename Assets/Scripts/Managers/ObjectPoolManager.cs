@@ -5,56 +5,115 @@ public class ObjectPoolManager : MonoBehaviour
 {
     public static ObjectPoolManager Instance;
 
-    public GameObject bulletPrefab;
-    private Queue<IPoolable> bulletPool = new Queue<IPoolable>();
-    public int poolSize = 20;
+    [System.Serializable]
+    public class Pool
+    {
+        public string tag;
+        public List<GameObject> prefabs; 
+        public int size;
+    }
+
+    public List<Pool> pools;
+    private Dictionary<string, Queue<IPoolable>> poolDictionary;
 
     private void Awake()
     {
         Instance = this;
-        InitializePool();
+        InitializePools();
     }
 
-    private void InitializePool()
+      private void InitializePools()
     {
-        for (int i = 0; i < poolSize; i++)
+        poolDictionary = new Dictionary<string, Queue<IPoolable>>();
+
+        foreach (var pool in pools)
         {
-            GameObject obj = Instantiate(bulletPrefab);
-            IPoolable poolable = obj.GetComponent<IPoolable>();
-            poolable.Deactivate();
-            bulletPool.Enqueue(poolable);
+            Queue<IPoolable> objectPool = new Queue<IPoolable>();
+
+            for (int i = 0; i < pool.size; i++)
+            {
+                // choose a prefab randomly from the list cause easy(in what cases would you(and how) use something specific other than random?)
+                GameObject prefab = pool.prefabs[Random.Range(0, pool.prefabs.Count)];
+                GameObject obj = Instantiate(prefab);
+                IPoolable poolable = obj.GetComponent<IPoolable>();
+                poolable.Init();
+                objectPool.Enqueue(poolable);
+            }
+
+            poolDictionary.Add(pool.tag, objectPool);
         }
     }
 
-    public IPoolable GetBullet()
+    public IPoolable GetObject(string tag)
     {
-        if (bulletPool.Count > 0)
+        if (!poolDictionary.ContainsKey(tag))
         {
-            return bulletPool.Dequeue();
+            Debug.LogWarning("Pool with tag " + tag + " doesn't exist.");
+            return null;
+        }
+
+        if (poolDictionary[tag].Count > 0)
+        {
+            return poolDictionary[tag].Dequeue();
         }
         else
         {
-            // optionally create a new bullet if the pool is empty?
-            GameObject obj = Instantiate(bulletPrefab);
-            return obj.GetComponent<IPoolable>();
-            //Debug.Log("new one , pool empty");
+            // extend the pool 
+            //return ExtendPool(tag);
+            return null;    
         }
     }
 
-    public void ReturnBullet(IPoolable bullet)
+    private IPoolable ExtendPool(string tag)
     {
-       // bullet.Deactivate();
-        bulletPool.Enqueue(bullet);
-       // Debug.Log("return to pool");
+        Pool pool = pools.Find(p => p.tag == tag);
+        if (pool == null)
+        {
+            Debug.LogWarning("Pool with tag " + tag + " doesn't exist.");
+            return null;
+        }
 
+        // randomly from the list of in what case(and how to implement) would i ne d this not to be random??
+        GameObject prefab = pool.prefabs[Random.Range(0, pool.prefabs.Count)];
+        GameObject obj = Instantiate(prefab);
+        IPoolable poolable = obj.GetComponent<IPoolable>();
+        poolable.Init();
+
+        // limit the maximum size of the pool
+        // if (poolDictionary[tag].Count < maxPoolSize) {  }
+
+        // ad the created object to the pool
+        poolDictionary[tag].Enqueue(poolable);
+
+        return poolable;
+    }
+
+
+
+    public void ReturnObject(string tag, IPoolable objectToReturn)
+    {
+        if (!poolDictionary.ContainsKey(tag))
+        {
+            Debug.LogWarning("Pool with tag " + tag + " doesn't exist.");
+            return;
+        }
+
+        objectToReturn.Deactivate();
+        poolDictionary[tag].Enqueue(objectToReturn);
     }
 
     //outside of ObjectPoolManager?
     public void SetBulletSpeed(float newSpeed)
     {
-        foreach (var bullet in bulletPool)
+        if (!poolDictionary.ContainsKey("Bullet"))
         {
-            if (bullet is BulletController bulletController)
+            Debug.LogWarning("Bullet pool doesn't exist.");
+            return;
+        }
+
+        foreach (var poolable in poolDictionary["Bullet"])
+        {
+            if (poolable is BulletController bulletController)
             {
                 bulletController.SetBulletSpeed(newSpeed);
             }

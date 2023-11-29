@@ -23,7 +23,7 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
     {
         if (barrelEnd != null)
         {
-            IPoolable bullet = ObjectPoolManager.Instance.GetBullet();
+            IPoolable bullet = ObjectPoolManager.Instance.GetObject("Bullet");
             bullet.Activate(barrelEnd.position, barrelEnd.rotation);
         }
     }

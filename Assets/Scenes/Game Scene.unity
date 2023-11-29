@@ -338,6 +338,7 @@ GameObject:
   - component: {fileID: 205609357}
   - component: {fileID: 205609356}
   - component: {fileID: 205609355}
+  - component: {fileID: 205609358}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -357,8 +358,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5316158ac4cbed4c8de7633399a57d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 6460899931515326538, guid: 51a8376ac3cd755cbbad07a94f820c02, type: 3}
-  poolSize: 20
+  pools:
+  - tag: Bullet
+    prefabs:
+    - {fileID: 6460899931515326538, guid: 51a8376ac3cd755cbbad07a94f820c02, type: 3}
+    size: 20
+  - tag: Asteroid
+    prefabs:
+    - {fileID: 6301937305276699604, guid: 970cef4323628c4c1b577dcd17f8e449, type: 3}
+    - {fileID: 3270854706232102317, guid: 9f1da9370a4e8bb76a538a7e5e7fc178, type: 3}
+    - {fileID: 3754454481811903619, guid: 00b6774f7a152a8d7ab155f1adca52f0, type: 3}
+    size: 15
 --- !u!4 &205609353
 Transform:
   m_ObjectHideFlags: 0
@@ -428,6 +438,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: 0
   scoreText: {fileID: 2140020548}
+--- !u!114 &205609358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205609351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7018760107dab243b2b31202d13a51d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnInterval: 2
+  maxAsteroids: 10
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,6 +865,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fed580731c06a9148b0ad7916cf63b29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animationEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1303378544}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: isPowerUp
+          m_BoolArgument: 0
+        m_CallState: 2
   newBulletSpeed: 50
 --- !u!61 &794124615
 BoxCollider2D:
@@ -1379,6 +1418,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!95 &1303378544 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 483187187378745829, guid: 93e22b769ef36ab93955870e2a407345, type: 3}
+  m_PrefabInstance: {fileID: 7474959310863463603}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1359032835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1636,7 +1680,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1766595429
 Transform:
   m_ObjectHideFlags: 0
@@ -1933,9 +1977,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 438228088930994696, guid: 93e22b769ef36ab93955870e2a407345, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.078
+      objectReference: {fileID: 0}
     - target: {fileID: 3139755442039625329, guid: 93e22b769ef36ab93955870e2a407345, type: 3}
       propertyPath: m_Name
       value: Ship
+      objectReference: {fileID: 0}
+    - target: {fileID: 3820196250296427830, guid: 93e22b769ef36ab93955870e2a407345, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5278765145680769362, guid: 93e22b769ef36ab93955870e2a407345, type: 3}
       propertyPath: m_RootOrder

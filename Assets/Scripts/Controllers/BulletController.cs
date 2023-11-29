@@ -28,7 +28,7 @@ public class BulletController : MonoBehaviour, IPoolable, IDestructible
         rb.AddForce(transform.up * bulletSpeed, ForceMode2D.Impulse);
 
         // Deactivate after a lifeTime  time
-        Invoke("Deactivate", lifeTime);
+        Invoke("DestroyObject", lifeTime);
     }
 
     public void Deactivate()
@@ -36,34 +36,48 @@ public class BulletController : MonoBehaviour, IPoolable, IDestructible
         gameObject.SetActive(false);
         CancelInvoke();
         rb.velocity = Vector2.zero;
-        ObjectPoolManager.Instance.ReturnBullet(this);
+        //ObjectPoolManager.Instance.ReturnObject("Bullet", this);
 
     }
 
     public void DestroyObject()
     {
-        Deactivate(); 
-
+        Deactivate();
+        ObjectPoolManager.Instance.ReturnObject("Bullet", this);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!hasCollided && collision.gameObject.CompareTag("Debris"))
+        if (!hasCollided)
         {
-            //Debug.Log("collsion with debris");
-            hasCollided = true;
+            if (collision.gameObject.CompareTag("Debris"))
+            {
+                hasCollided = true;
+                DestroyObject();
+               // ObjectPoolManager.Instance.ReturnObject("Bullet", this);
 
-            DestroyObject();
-           // health diminish instead? read gdd first
-            Destroy(collision.gameObject);
 
-            ScoreManager.Instance.IncrementScore(scoreInt);
+                // deactivate the asteroid
+                IPoolable asteroid = collision.gameObject.GetComponent<IPoolable>();
+                if (asteroid != null)
+                {
+                    //asteroid.Deactivate();.
+                    Debug.Log("Collison bullet asteroid");
+                    ObjectPoolManager.Instance.ReturnObject("Asteroid", asteroid);
+                }
 
+                ScoreManager.Instance.IncrementScore(scoreInt);
+            }
         }
     }
 
     public void SetBulletSpeed(float newSpeed)
     {
         bulletSpeed = newSpeed;
+    }
+
+    public void Init()
+    {
+        Deactivate();
     }
 }
