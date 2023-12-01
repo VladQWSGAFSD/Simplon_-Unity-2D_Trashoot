@@ -9,9 +9,12 @@ public class SpeedPowerUp : MonoBehaviour, IViagra
 
     public void ActivatePower()
     {
-        ObjectPoolManager.Instance.SetBulletSpeed(newBulletSpeed);
-       // anim.Play("barrelAnimation");
+        //instead of ObjectPoolManager better use bulletspawner.cs
+        //ObjectPoolManager.Instance.SetBulletSpeed(newBulletSpeed);
         animationEvent.Invoke();
+        //dont like using public for speed, maybe better: BulletController.SetBulletSpeed(newBulletSpeed), why?
+        BulletController.speed = newBulletSpeed;
+
     }
 
 }

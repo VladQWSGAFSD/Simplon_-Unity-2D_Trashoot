@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
         }
         gameOverScreen.SetActive(false);
     }
+ 
 
     public void ShowGameOverScreen(int score)
     {

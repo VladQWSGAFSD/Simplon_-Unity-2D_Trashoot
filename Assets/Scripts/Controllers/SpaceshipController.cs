@@ -4,13 +4,14 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
 {
     [SerializeField] float moveSpeed = 5.0f;
     [SerializeField] float rotateSpeed = 180f;
-    [SerializeField] Transform barrelEnd; 
-
+    [SerializeField] Transform barrelEnd;
+    [SerializeField] Pool bulletPool;
+    //here you have to change Spheres to bulletspawner
+   // [SerializeField] Spheres bullets;
 
     private void Update()
     {
         Move();
-
 
         // Shoot
         if (Input.GetKeyDown(KeyCode.Space))
@@ -20,11 +21,15 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
     }
 
     private void Shoot()
+
     {
         if (barrelEnd != null)
         {
-            IPoolable bullet = ObjectPoolManager.Instance.GetObject("Bullet");
-            bullet.Activate(barrelEnd.position, barrelEnd.rotation);
+            //IPoolable bullet = ObjectPoolManager.Instance.GetObject("Bullet");
+            //bullet.Activate(barrelEnd.position, barrelEnd.rotation);
+            //bullets.Add(bulletPool.Get(barrelEnd.position));
+            Vector2 direction = barrelEnd.up; // Use the barrel's 'up' direction for 2D space
+            BulletPool.Instance.Get(barrelEnd.position, direction);
         }
     }
     public void Move()
@@ -50,20 +55,20 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
         }
     }
 
-    public void DestroyObject()
+    public void DeactivateObject()
     {
-        // Animation, reset level, reset score? Trigger and event? 
+        // Animation, reset level, reset score? Trigger an event? 
         gameObject.SetActive(false);
+        GameStateManager.Instance.TriggerGameOver();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Debris"))
         {
-            DestroyObject();
+            //before DeactivateObject() get IDestructuble and see how much damage can be done to the ship instead
+            DeactivateObject();
             //Debug.Log("Destroyed.");
-            GameStateManager.Instance.TriggerGameOver();
-
         }
 
         // retrieve the IViagra component from the gameObject of the collision, bad it might be, think what better then GetComponent?

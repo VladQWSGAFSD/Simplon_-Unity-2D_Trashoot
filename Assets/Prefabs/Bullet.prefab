@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4319061695121865575}
   - component: {fileID: -70718825718343677}
   - component: {fileID: -2821845225340336687}
-  - component: {fileID: 168725061371640844}
+  - component: {fileID: 4581557510663644826}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Children:
   - {fileID: 5510756900408037897}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &-70718825718343677
 Rigidbody2D:
@@ -91,7 +91,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -107,7 +107,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &168725061371640844
+--- !u!114 &4581557510663644826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,11 +116,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6460899931515326538}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f192252799de11439852b8a8583b4a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 857e37b83248979408828a4d8733d971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpeed: 10
-  lifeTime: 0.5
+  speed: 10
+  lifeTime: 2
+  targetTag: Debris
 --- !u!1 &6853057534204971340
 GameObject:
   m_ObjectHideFlags: 0
