@@ -109,7 +109,6 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
     public void RotateLeft()
     {
         transform.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
-        Debug.Log("Left");
     }
     public void RotateRight()
     {
