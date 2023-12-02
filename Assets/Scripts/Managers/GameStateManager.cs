@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameStateManager : MonoBehaviour
+public class GameStateManager : MonoBehaviour, IGameOver
 {
     //you have to subscribe to onFadeComplete from SceneTransitionManager in order to restart the game once fade is done
     // why doesnt         SceneTransitionManager.Instance.FadeFromBlack(() => seem to work???

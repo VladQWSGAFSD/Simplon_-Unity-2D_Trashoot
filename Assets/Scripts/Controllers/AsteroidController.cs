@@ -7,7 +7,6 @@ public class AsteroidController : MonoBehaviour, IDestructible
 
     private void Start()
     {
-        // Initialize rotation
         Rigidbody2D rb2d = GetComponent<Rigidbody2D>();
         rb2d.angularVelocity = Random.Range(-rotationSpeed, rotationSpeed);
     }
@@ -36,7 +35,6 @@ public class AsteroidController : MonoBehaviour, IDestructible
 
     public void DeactivateObject()
     {
-        // Reset the asteroid's properties and deactivate it
         ResetAsteroid();
         gameObject.SetActive(false);
         AsteroidPool.Instance.Release(gameObject);

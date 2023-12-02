@@ -6,8 +6,12 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
     [SerializeField] float rotateSpeed = 180f;
     [SerializeField] Transform barrelEnd;
     [SerializeField] Pool bulletPool;
-    //here you have to change Spheres to bulletspawner
-   // [SerializeField] Spheres bullets;
+    private IGameOver gameStateManager;
+
+    public void Initialize(IGameOver gameStateManager)
+    {
+        this.gameStateManager = gameStateManager;
+    }
 
     private void Update()
     {
@@ -20,6 +24,44 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
         }
     }
 
+    #region Ship's Reaction
+    public void DeactivateObject()
+    {
+        // Animation, reset level, reset score? Trigger an event? 
+        gameObject.SetActive(false);
+        //for testing for now moveed out to collison directly
+//        GameStateManager.Instance.TriggerGameOver();
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        HandleCollision(collision.gameObject);
+
+    }
+    public void HandleCollision(GameObject collisionObject)
+    {
+        if (collisionObject.gameObject.CompareTag("Debris"))
+        {
+            //before DeactivateObject() get IDestructuble and see how much damage can be done to the ship instead
+            DeactivateObject();
+            GameStateManager.Instance.TriggerGameOver();
+
+            //Debug.Log("Destroyed.");
+        }
+
+        // retrieve the IViagra component from the gameObject of the collision, bad it might be, think what better then GetComponent?
+        IViagra powerUp = collisionObject.gameObject.GetComponent<IViagra>();
+        if (powerUp != null)
+        {
+            powerUp.ActivatePower();
+            Destroy(collisionObject.gameObject);
+
+        }
+    }
+    #endregion
+
+    #region Ship's Action
     private void Shoot()
 
     {
@@ -37,47 +79,41 @@ public class SpaceshipController : MonoBehaviour,IMovable,IDestructible
         // Movement
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
+            MoveUp();
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            transform.Translate(Vector2.up * -moveSpeed * Time.deltaTime);
+            MoveDown();
         }
 
         // Rotation
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
+            RotateLeft();
         }
         else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            transform.Rotate(Vector3.forward, -rotateSpeed * Time.deltaTime);
+            RotateRight();
         }
     }
 
-    public void DeactivateObject()
+    public void MoveUp()
     {
-        // Animation, reset level, reset score? Trigger an event? 
-        gameObject.SetActive(false);
-        GameStateManager.Instance.TriggerGameOver();
+        transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void MoveDown()
     {
-        if (collision.gameObject.CompareTag("Debris"))
-        {
-            //before DeactivateObject() get IDestructuble and see how much damage can be done to the ship instead
-            DeactivateObject();
-            //Debug.Log("Destroyed.");
-        }
-
-        // retrieve the IViagra component from the gameObject of the collision, bad it might be, think what better then GetComponent?
-        IViagra powerUp = collision.gameObject.GetComponent<IViagra>();
-        if (powerUp != null)
-        {
-            powerUp.ActivatePower();
-            Destroy(collision.gameObject);
-
-        }
+        
+        //transform.Translate(Vector2.up * -moveSpeed * Time.deltaTime);
     }
+    public void RotateLeft()
+    {
+        transform.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
+        Debug.Log("Left");
+    }
+    public void RotateRight()
+    {
+        transform.Rotate(Vector3.forward, -rotateSpeed * Time.deltaTime);
+    }
+    #endregion
 }

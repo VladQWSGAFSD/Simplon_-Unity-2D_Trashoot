@@ -1,14 +1,17 @@
+using System;
 using UnityEngine;
 
 public class BulletController : MonoBehaviour, IDestructible
 {
-    public static float speed = 10f;
-    [SerializeField]
-    private float lifeTime = 5f;
+    public static float speed = 3f;
+    public float lifeTime = 2f;
     [SerializeField]
     private string targetTag = "Debris";
-    [SerializeField] int scoreInt = 1;
-    private Rigidbody2D rb2d; 
+    [SerializeField] 
+    int scoreInt = 1;
+    private Rigidbody2D rb2d;
+
+    public event Action OnDeactivate;
 
     private void Awake()
     {
@@ -31,7 +34,11 @@ public class BulletController : MonoBehaviour, IDestructible
     {
         CancelInvoke(nameof(DeactivateObject)); 
         ResetBullet();
-        BulletPool.Instance.Release(gameObject); 
+        if (BulletPool.Instance != null)
+        {
+            BulletPool.Instance.Release(gameObject);
+        }
+        OnDeactivate?.Invoke();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -46,7 +53,7 @@ public class BulletController : MonoBehaviour, IDestructible
                 destructible.DeactivateObject();
             }
             //bad to have it here, cant have it in destructible.DeactivateObject() cause asteroid gets deactivated by going outside of the view as well
-            //lets not even talk about taht scoremanager is an instance but implements IScore(maybe Iscore has to be on asteroid cause it will depend on what
+            //lets not even talk about taht scoremanager is an singel but implements IScore(maybe Iscore has to be on asteroid cause it will depend on what
             // asteroid you destroy how many points you get?) 
             // so asteroid has to have IDestructible(with Deactivate() and Destroy()) and IScore that will augment if Destroy() 
             ScoreManager.Instance.IncrementScore(scoreInt);

@@ -50,7 +50,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -119,9 +119,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 857e37b83248979408828a4d8733d971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
   lifeTime: 2
   targetTag: Debris
+  scoreInt: 1
 --- !u!1 &6853057534204971340
 GameObject:
   m_ObjectHideFlags: 0
